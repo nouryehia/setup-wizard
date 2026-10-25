@@ -1,0 +1,8 @@
+# User info attached to commits
+[user]
+	name = nour
+	email = noureldine.yehia@gmail.com
+
+# Load local/work configs
+[include]
+	path = ~/.gitconfig.local

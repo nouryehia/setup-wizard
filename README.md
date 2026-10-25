@@ -11,6 +11,9 @@ Clone this [repo](https://github.com/nouryehia/setup-wizard.git), then from the 
 .wizard/revert   # remove those symlinks and restore the original files
 ```
 
+## Notes
+
 - 🆕 To add a file, copy it from `~` to the same path in the repo, `git add` it, and run `.wizard/setup`.
 - ℹ️ Files already in `~` are moved to `~/.local/state/setup-wizard/backup` before being replaced.
 - ⚠️ Symlinks point to this clone, so run `.wizard/revert` before moving/deleting it.
+- 🔒 Link local git settings (e.g. a work email) in `~/.gitconfig.local`.
