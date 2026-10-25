@@ -17,8 +17,15 @@ linked() { [ "$(readlink "$dst")" = "$src" ]; }
 
 # Runs the given function on each tracked file, excluding .wizard and README.md
 each() {
-  git ls-files -z -- ':!.wizard' ':!README.md' | while IFS= read -r -d '' f; do
+  while IFS= read -r -d '' f; do
     src="$PWD/$f" dst="$HOME/$f" bak="$backups/$f"
     "$1"
-  done
+  done < <(git ls-files -z -- ':!.wizard' ':!README.md')
+}
+
+# Prints a block of output, with a blank line between blocks
+block() {
+  [ -z "${printed:-}" ] || echo
+  echo "$1"
+  printed=1
 }

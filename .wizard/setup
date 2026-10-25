@@ -6,18 +6,32 @@
 
 source "$(dirname "$0")/lib"
 
+links="" backed="" downloads=""
+
 # Symlinks a file into ~, backing up whatever was there (skips if already linked)
 setup() {
   linked && return
 
   if exists "$dst"; then
     mkdir -p "$(dirname "$bak")"
-    mv -nv "$dst" "$bak"
+    mv -n "$dst" "$bak"
+    backed=1
   fi
 
   mkdir -p "$(dirname "$dst")"
-  ln -sv "$src" "$dst"
+  ln -s "$src" "$dst"
+  links+=$'\n'"- ~/$f"
 }
 
 # Run setup on every repo file
 each setup
+
+# Collect each listed app that isn't installed yet
+while read -r url app; do
+  [ -d "/Applications/$app.app" ] || downloads+=$'\n'"- $app: $url"
+done < .wizard/apps
+
+# Print summary
+[ -z "$links" ] || block "🔗 Linked:$links"
+[ -z "$backed" ] || block "Backups can be found @ $backups"
+[ -z "$downloads" ] || block "📦 Download:$downloads"
