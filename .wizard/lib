@@ -1,0 +1,24 @@
+# Shared settings and helpers for setup and revert. Sourced by both scripts; not meant to be run directly.
+
+# Stop on any error, unset variable, or failed pipe
+set -euo pipefail
+
+# Run from this repo root, wherever the script was called from
+cd -P "$(dirname "$0")/.."
+
+# Where setup moves files it replaces with symlinks, so revert can restore them
+backups="${XDG_STATE_HOME:-$HOME/.local/state}/setup-wizard/backup"
+
+# Checks if anything exists at a path, including broken symlinks
+exists() { [ -e "$1" ] || [ -L "$1" ]; }
+
+# Checks if the file in ~ is already a symlink to this repo's copy
+linked() { [ "$(readlink "$dst")" = "$src" ]; }
+
+# Runs the given function on each tracked file, excluding .wizard and README.md
+each() {
+  git ls-files -z -- ':!.wizard' ':!README.md' | while IFS= read -r -d '' f; do
+    src="$PWD/$f" dst="$HOME/$f" bak="$backups/$f"
+    "$1"
+  done
+}

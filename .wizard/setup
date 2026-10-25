@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Symlinks this repo's tracked files into the same paths under ~.
+#
+# Usage: .wizard/setup
+
+source "$(dirname "$0")/lib"
+
+# Symlinks a file into ~, backing up whatever was there (skips if already linked)
+setup() {
+  linked && return
+
+  if exists "$dst"; then
+    mkdir -p "$(dirname "$bak")"
+    mv -nv "$dst" "$bak"
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  ln -sv "$src" "$dst"
+}
+
+# Run setup on every repo file
+each setup

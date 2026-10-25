@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# Undoes setup: removes its symlinks from ~ and restores the backed-up files.
+#
+# Usage: .wizard/revert
+
+source "$(dirname "$0")/lib"
+
+# Removes a file's symlink from ~ and restores its backup (skips if not linked)
+revert() {
+  linked || return 0
+
+  rm -v "$dst"
+  if exists "$bak"; then mv -v "$bak" "$dst"; fi
+}
+
+# Run revert on every repo file
+each revert
